@@ -11,7 +11,7 @@ type IOrderService interface {
 	UpdateOrder(*datamodels.Order) error
 	InsertOrder(*datamodels.Order) (int64, error)
 	GetAllOrder() ([]*datamodels.Order, error)
-	GetAllOrderInfo(map[int]map[string]string, error)
+	GetAllOrderInfo() (map[int]map[string]string, error)
 }
 
 func NewOrderService(repository repositories.IOrderRepository) IOrderService {
