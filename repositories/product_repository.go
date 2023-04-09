@@ -111,6 +111,7 @@ func (p *ProductManager) SelectByKey(productId int64) (productRes *datamodels.Pr
 	if len(result) == 0 {
 		return &datamodels.Product{}, nil
 	}
+	productRes = &datamodels.Product{}
 	common.DataToStructByTagSql(result, productRes)
 	return
 }
