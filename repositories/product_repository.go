@@ -69,10 +69,10 @@ func (p *ProductManager) Delete(productId int64) bool {
 	}
 	sql := "delete from product where ID=?"
 	stmt, err := p.mysqlConn.Prepare(sql)
-	if err == nil {
+	if err != nil {
 		return false
 	}
-	_, err = stmt.Exec(productId)
+	_, err = stmt.Exec(strconv.FormatInt(productId, 10))
 	if err != nil {
 		return false
 	}

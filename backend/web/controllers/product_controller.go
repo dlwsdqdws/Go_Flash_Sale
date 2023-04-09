@@ -76,3 +76,18 @@ func (p *ProductController) GetManager() mvc.View {
 		},
 	}
 }
+
+func (p *ProductController) GetDelete() {
+	idString := p.Ctx.URLParam("id")
+	id, err := strconv.ParseInt(idString, 10, 64)
+	if err != nil {
+		p.Ctx.Application().Logger().Debug(err)
+	}
+	check := p.ProductService.DeleteProductByID(id)
+	if check {
+		p.Ctx.Application().Logger().Debug("Delete successfully，ID：" + idString)
+	} else {
+		p.Ctx.Application().Logger().Debug("Error occurred when deleting，ID：" + idString)
+	}
+	p.Ctx.Redirect("/product/all")
+}
