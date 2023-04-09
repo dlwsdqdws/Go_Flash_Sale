@@ -2,49 +2,55 @@ package main
 
 import (
 	"context"
-	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris"
 
-	"github.com/opentracing/opentracing-go/log"
+	"github.com/kataras/iris/mvc"
+
 	"pro-iris/backend/web/controllers"
 	"pro-iris/common"
 	"pro-iris/repositories"
 	"pro-iris/services"
+
+	"github.com/opentracing/opentracing-go/log"
 )
 
 func main() {
-	// 1. Create iris instance
+	//1.创建iris 实例
 	app := iris.New()
-	// 2. Set error mode
+	//2.设置错误模式，在mvc模式下提示错误
 	app.Logger().SetLevel("debug")
-	// 3. Register model
-	template := iris.HTML("./backend/web/views", ".html").Layout("shared/layout.html").Reload(true)
-	app.RegisterView(template)
-	// 4. Set model Repository
-	app.HandleDir("/assets", iris.Dir("./backend/web/assets"))
-	// 5. Error handler
+	//3.注册模板
+	tmplate := iris.HTML("./backend/web/views", ".html").Layout("shared/layout.html").Reload(true)
+	app.RegisterView(tmplate)
+	//4.设置模板目标
+	app.StaticWeb("/assets", "./backend/web/assets")
+	//出现异常跳转到指定页面
 	app.OnAnyErrorCode(func(ctx iris.Context) {
-		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "Error Occurred!"))
+		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "访问的页面出错！"))
 		ctx.ViewLayout("")
 		ctx.View("shared/error.html")
 	})
+	//连接数据库
 	db, err := common.NewMysqlConn()
 	if err != nil {
 		log.Error(err)
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	// 6. Register controller and routing
+
+	//5.注册控制器
 	productRepository := repositories.NewProductManager("product", db)
-	productService := services.NewProductService(productRepository)
+	productSerivce := services.NewProductService(productRepository)
 	productParty := app.Party("/product")
 	product := mvc.New(productParty)
-	product.Register(ctx, productService)
+	product.Register(ctx, productSerivce)
 	product.Handle(new(controllers.ProductController))
-	// 7. Start
+
+	//6.启动服务
 	app.Run(
 		iris.Addr("localhost:8080"),
 		iris.WithoutServerError(iris.ErrServerClosed),
 		iris.WithOptimizations,
 	)
+
 }

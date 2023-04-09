@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/mvc"
 	"pro-iris/common"
 	"pro-iris/datamodels"
 	"pro-iris/services"
