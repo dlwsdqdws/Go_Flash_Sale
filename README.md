@@ -1,4 +1,4 @@
-# High_Concurrency_Go
+# Go High Concurrency
 
 1. model
 2. repositories

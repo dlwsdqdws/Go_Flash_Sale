@@ -6,12 +6,11 @@ import (
 
 	"github.com/kataras/iris/mvc"
 
+	"github.com/opentracing/opentracing-go/log"
 	"pro-iris/backend/web/controllers"
 	"pro-iris/common"
 	"pro-iris/repositories"
 	"pro-iris/services"
-
-	"github.com/opentracing/opentracing-go/log"
 )
 
 func main() {
