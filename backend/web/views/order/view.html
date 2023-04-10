@@ -14,10 +14,11 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
-                                <th style="width:20%;">Order ID</th>
+                                <th style="width:10%;">Order ID</th>
                                 <th style="width:17%;">User Name</th>
-                                <th style="width:15%;">Product Name</th>
+                                <th style="width:25%;">Product Name</th>
                                 <th style="width:10%;">Order Status</th>
+                                <th style="width:10%;">Operations</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -28,6 +29,8 @@
                                 <td class="milestone"> {{$v.productName}}
                                 </td>
                                 <td class="cell-detail">{{ if eq $v.orderStatus "1"}} Delivered {{else}} Not Delivered {{end}}</td>
+<!--                                <td class="cell-detail"><a href="/order/manager?id={{$v.ID}}"><button class="btn btn-space btn-primary">Change</button></a> <a href="/order/delete?id={{$v.ID}}"><button class="btn btn-space btn-danger">Delete</button></a></td>-->
+                                <td class="cell-detail"> <a href="/order/delete?id={{$v.ID}}"><button class="btn btn-space btn-danger">Delete</button></a></td>
                             </tr>
                             {{end}}
                             </tbody>

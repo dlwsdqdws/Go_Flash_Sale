@@ -17,13 +17,13 @@ func main() {
 	// 2. Set error mode
 	app.Logger().SetLevel("debug")
 	// 3. Register model
-	tmplate := iris.HTML("./backend/web/views", ".html").Layout("shared/layout.html").Reload(true)
-	app.RegisterView(tmplate)
+	template := iris.HTML("./backend/web/views", ".html").Layout("shared/layout.html").Reload(true)
+	app.RegisterView(template)
 	// 4. Set model Repository
 	app.StaticWeb("/assets", "./backend/web/assets")
 	// 5. Error handler
 	app.OnAnyErrorCode(func(ctx iris.Context) {
-		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "访问的页面出错！"))
+		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "Error Occurred！"))
 		ctx.ViewLayout("")
 		ctx.View("shared/error.html")
 	})
@@ -36,10 +36,10 @@ func main() {
 	defer cancel()
 	// 7. Register controller and routing
 	productRepository := repositories.NewProductManager("product", db)
-	productSerivce := services.NewProductService(productRepository)
+	productService := services.NewProductService(productRepository)
 	productParty := app.Party("/product")
 	product := mvc.New(productParty)
-	product.Register(ctx, productSerivce)
+	product.Register(ctx, productService)
 	product.Handle(new(controllers.ProductController))
 
 	orderRepository := repositories.NewOrderManagerRepository("order", db)

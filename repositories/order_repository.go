@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"fmt"
 	"pro-iris/common"
 	"pro-iris/datamodels"
 	"strconv"
@@ -58,25 +59,26 @@ func (o *OrderManagerRepository) Insert(order *datamodels.Order) (productID int6
 
 func (o *OrderManagerRepository) Delete(orderID int64) (check bool) {
 	if err := o.Conn(); err != nil {
-		return false
+		return
 	}
-	sql := "delete from " + o.table + " where ID=?"
+	sql := "delete from `order` where ID=?"
 	stmt, errStmt := o.mysqlConn.Prepare(sql)
 	if errStmt != nil {
-		return false
+		fmt.Println(errStmt)
+		return
 	}
-	_, err := stmt.Exec(orderID)
+	_, err := stmt.Exec(strconv.FormatInt(orderID, 10))
 	if err != nil {
-		return false
+		return
 	}
 	return true
 }
 
 func (o *OrderManagerRepository) Update(order *datamodels.Order) (err error) {
-	if errConn := o.Conn(); err != nil {
+	if errConn := o.Conn(); errConn != nil {
 		return errConn
 	}
-	sql := "Update " + o.table + " set userID=?,productID=?,orderStatus=? where ID=" + strconv.FormatInt(order.ID, 10)
+	sql := "Update `order` set userID=?,productID=?,orderStatus=? Where ID=" + strconv.FormatInt(order.ID, 10)
 	stmt, errStmt := o.mysqlConn.Prepare(sql)
 	if errStmt != nil {
 		return errStmt

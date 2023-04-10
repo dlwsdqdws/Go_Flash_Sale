@@ -1,0 +1,47 @@
+<div class="page-head">
+    <h2 class="page-head-title">Order Management</h2>
+
+</div>
+
+<div class="main-content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default panel-border-color panel-border-color-primary">
+                <div class="panel-heading panel-heading-divider">Order Details<span class="panel-subtitle">Modify Order Information</span></div>
+                <div class="panel-body">
+                    <form action="/order/update" style="border-radius: 0px;" class="form-horizontal group-border-dashed" method="post" >
+                        <input type="text" name="ID" value="{{.order.ID}}" hidden>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Order ID</label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" name="ID" value="{{.order.ID}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Product ID</label>
+                            <div class="col-sm-6">
+                                <input type="number"   class="form-control" name="ProductId" value="{{.order.ProductId}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Order Status</label>
+                            <div class="col-sm-6">
+                                <input type="number"   class="form-control" name="OrderStatus" value="{{.order.OrderStatus}}">
+                            </div>
+                        </div>
+                        <div class="row xs-pt-15">
+                            <div class="col-xs-6">
+                                <p class="text-right">
+                                    <button type="submit" class="btn btn-space btn-primary">Save</button>
+                                    <button class="btn btn-space btn-default" type="reset">Reset</button>
+                                </p>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
