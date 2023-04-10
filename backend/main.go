@@ -48,7 +48,7 @@ func main() {
 	order := mvc.New(orderParty)
 	order.Register(ctx, orderService)
 	order.Handle(new(controllers.OrderController))
-	// 7. Start
+	// 8. Start
 	app.Run(
 		iris.Addr("localhost:8080"),
 		iris.WithoutServerError(iris.ErrServerClosed),
