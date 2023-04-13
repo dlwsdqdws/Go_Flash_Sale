@@ -23,7 +23,7 @@ func main() {
 	app.RegisterView(template)
 	// 4. Set model Repository
 	app.StaticWeb("/public", "./frontend/web/public")
-	app.StaticWeb("/html", "./fronted/web/htmlProductShow")
+	app.StaticWeb("/html", "./frontend/web/htmlProductShow")
 	// 5. Error handler
 	app.OnAnyErrorCode(func(ctx iris.Context) {
 		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "Error Occurred！"))
