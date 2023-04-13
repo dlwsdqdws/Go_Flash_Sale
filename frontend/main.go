@@ -48,6 +48,13 @@ func main() {
 	userParty.Register(userService, ctx, sess.Start)
 	userParty.Handle(new(controllers.UserController))
 
+	product := repositories.NewProductManager("product", db)
+	productService := services.NewProductService(product)
+	proProduct := app.Party("/product")
+	productParty := mvc.New(proProduct)
+	productParty.Register(productService, sess.Start)
+	productParty.Handle(new(controllers.ProductController))
+
 	// 8. Start
 	app.Run(
 		iris.Addr("0.0.0.0:8082"),
