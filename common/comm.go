@@ -54,5 +54,5 @@ func TypeConversion(value string, ntype string) (reflect.Value, error) {
 		return reflect.ValueOf(i), err
 	}
 
-	return reflect.ValueOf(value), errors.New("未知的类型：" + ntype)
+	return reflect.ValueOf(value), errors.New("Unknown：" + ntype)
 }

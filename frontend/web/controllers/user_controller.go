@@ -6,6 +6,8 @@ import (
 	"github.com/kataras/iris/sessions"
 	"pro-iris/datamodels"
 	"pro-iris/services"
+	"pro-iris/tool"
+	"strconv"
 )
 
 type UserController struct {
@@ -46,5 +48,24 @@ func (c *UserController) PostRegister() {
 func (c *UserController) GetLogin() mvc.View {
 	return mvc.View{
 		Name: "user/login.html",
+	}
+}
+
+func (c *UserController) PostLogin() mvc.Response {
+	var (
+		userName = c.Ctx.FormValue("userName")
+		password = c.Ctx.FormValue("password")
+	)
+	user, check := c.Service.IsPswSuccess(userName, password)
+	if !check {
+		return mvc.Response{
+			Path: "/user/login",
+		}
+	}
+	tool.GlobalCookie(c.Ctx, "uid", strconv.FormatInt(user.ID, 10))
+	c.Session.Set("userID", strconv.FormatInt(user.ID, 10))
+
+	return mvc.Response{
+		Path: "/product/",
 	}
 }

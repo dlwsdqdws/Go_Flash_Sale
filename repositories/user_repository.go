@@ -50,7 +50,9 @@ func (u *UserManagerRepository) Select(userName string) (user *datamodels.User, 
 	if errRow != nil {
 		return &datamodels.User{}, errRow
 	}
+
 	result := common.GetResultRow(row)
+
 	if len(result) == 0 {
 		return &datamodels.User{}, errors.New("user doesn't exist")
 	}
