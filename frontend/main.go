@@ -51,10 +51,12 @@ func main() {
 
 	product := repositories.NewProductManager("product", db)
 	productService := services.NewProductService(product)
+	order := repositories.NewOrderManagerRepository("order", db)
+	orderService := services.NewOrderService(order)
 	proProduct := app.Party("/product")
 	productParty := mvc.New(proProduct)
 	proProduct.Use(middleware.AuthConProduct)
-	productParty.Register(productService, sess.Start)
+	productParty.Register(productService, orderService, sess.Start)
 	productParty.Handle(new(controllers.ProductController))
 
 	// 8. Start

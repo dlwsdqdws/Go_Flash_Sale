@@ -45,7 +45,7 @@ func (o *OrderManagerRepository) Insert(order *datamodels.Order) (productID int6
 	if err = o.Conn(); err != nil {
 		return
 	}
-	sql := "INSERT " + o.table + " set userID=?, productId=?, orderStatus=?"
+	sql := "INSERT `order` set userID=?, productId=?, orderStatus=?"
 	stmt, errStmt := o.mysqlConn.Prepare(sql)
 	if errStmt != nil {
 		return productID, errStmt
