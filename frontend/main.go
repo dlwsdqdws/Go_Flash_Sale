@@ -7,6 +7,7 @@ import (
 	"github.com/kataras/iris/sessions"
 	"github.com/opentracing/opentracing-go/log"
 	"pro-iris/common"
+	"pro-iris/frontend/middleware"
 	"pro-iris/frontend/web/controllers"
 	"pro-iris/repositories"
 	"pro-iris/services"
@@ -52,6 +53,7 @@ func main() {
 	productService := services.NewProductService(product)
 	proProduct := app.Party("/product")
 	productParty := mvc.New(proProduct)
+	proProduct.Use(middleware.AuthConProduct)
 	productParty.Register(productService, sess.Start)
 	productParty.Handle(new(controllers.ProductController))
 
