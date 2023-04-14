@@ -4,14 +4,12 @@ import (
 	"context"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
-	"github.com/kataras/iris/sessions"
 	"github.com/opentracing/opentracing-go/log"
 	"pro-iris/common"
 	"pro-iris/frontend/middleware"
 	"pro-iris/frontend/web/controllers"
 	"pro-iris/repositories"
 	"pro-iris/services"
-	"time"
 )
 
 func main() {
@@ -38,16 +36,11 @@ func main() {
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
-	sess := sessions.New(sessions.Config{
-		Cookie:  "helloworld",
-		Expires: 60 * time.Minute,
-	})
 	// 7. Register controller and routing
 	user := repositories.NewUserManagerRepository("user", db)
 	userService := services.NewUserService(user)
 	userParty := mvc.New(app.Party("/user"))
-	userParty.Register(userService, ctx, sess.Start)
+	userParty.Register(userService, ctx)
 	userParty.Handle(new(controllers.UserController))
 
 	product := repositories.NewProductManager("product", db)
@@ -57,7 +50,7 @@ func main() {
 	proProduct := app.Party("/product")
 	productParty := mvc.New(proProduct)
 	proProduct.Use(middleware.AuthConProduct)
-	productParty.Register(productService, orderService, sess.Start)
+	productParty.Register(productService, orderService)
 	productParty.Handle(new(controllers.ProductController))
 
 	// 8. Start

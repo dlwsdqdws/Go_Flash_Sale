@@ -77,7 +77,7 @@ func AesDeCrypt(encypted []byte, key []byte) ([]byte, error) {
 	return origData, err
 }
 
-// encrypt base64
+// Encrypt base64
 func EnPwdCode(pwd []byte) (string, error) {
 	result, err := AesEcrypt(pwd, PwdKey)
 	if err != nil {
@@ -86,7 +86,7 @@ func EnPwdCode(pwd []byte) (string, error) {
 	return base64.StdEncoding.EncodeToString(result), err
 }
 
-// Decryption
+// Decrypt base64
 func DePwdCode(pwd string) ([]byte, error) {
 	// decryption base64
 	pwdByte, err := base64.StdEncoding.DecodeString(pwd)
