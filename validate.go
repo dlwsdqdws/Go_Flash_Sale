@@ -8,13 +8,16 @@ import (
 
 // Unified verification filter
 // Each interface needs to be verified in advance
-func Auth(w http.ResponseWriter, r *http.Response) error {
+func Auth(w http.ResponseWriter, r *http.Request) error {
 	fmt.Println("run Auth function successfully")
+	// Add permission verification based on cookie
 	return nil
 }
 
+//func checkUserInfo(r *http.Request)
+
 // Execute normal logic
-func Check(w http.ResponseWriter, r *http.Response) {
+func Check(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("run Check function successfully")
 }
 
