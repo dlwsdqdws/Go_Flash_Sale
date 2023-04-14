@@ -38,7 +38,7 @@ func PKCS7UnPadding(origData []byte) ([]byte, error) {
 
 // Encryption
 func AesEcrypt(origData []byte, key []byte) ([]byte, error) {
-	// 1. Create encryption instance
+	// 1. Create encryption algo instance
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -55,6 +55,28 @@ func AesEcrypt(origData []byte, key []byte) ([]byte, error) {
 	return encrypted, nil
 }
 
+// AES decryption
+func AesDeCrypt(encypted []byte, key []byte) ([]byte, error) {
+	// 1. Create encryption algo instance
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	// 2. Get block(PwdKey) size
+	blockSize := block.BlockSize()
+	// 3. Create encryption client instance
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+	origData := make([]byte, len(encypted))
+	// 4. Decryption - the same function as encryption
+	blockMode.CryptBlocks(origData, encypted)
+	// 5. Remove padding string
+	origData, err = PKCS7UnPadding(origData)
+	if err != nil {
+		return nil, err
+	}
+	return origData, err
+}
+
 // encrypt base64
 func EnPwdCode(pwd []byte) (string, error) {
 	result, err := AesEcrypt(pwd, PwdKey)
@@ -62,4 +84,15 @@ func EnPwdCode(pwd []byte) (string, error) {
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(result), err
+}
+
+// Decryption
+func DePwdCode(pwd string) ([]byte, error) {
+	// decryption base64
+	pwdByte, err := base64.StdEncoding.DecodeString(pwd)
+	if err != nil {
+		return nil, err
+	}
+	// AES decryption
+	return AesDeCrypt(pwdByte, PwdKey)
 }
