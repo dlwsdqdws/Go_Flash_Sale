@@ -8,6 +8,15 @@ import (
 	"pro-iris/encrypt"
 )
 
+// cluster addresses : here internal IPs
+var hostArray = []string{"127.0.0.1", "127.0.0.1"}
+
+var localHost = "127.0.0.1"
+
+var port = "8081"
+
+var hashConsistent *common.Consistent
+
 // Unified verification filter
 // Each interface needs to be verified in advance
 func Auth(w http.ResponseWriter, r *http.Request) error {
@@ -58,6 +67,13 @@ func Check(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// LB settings
+	// Consistent Hashing
+	hashConsistent = common.NewConsistent()
+	for _, v := range hostArray {
+		hashConsistent.Add(v)
+	}
+
 	// 1. create filter
 	filter := common.NewFilter()
 	// 2. register filter
