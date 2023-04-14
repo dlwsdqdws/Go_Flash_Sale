@@ -4,20 +4,36 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"encoding/base64"
+	"errors"
 )
 
 // Advanced Encryption Standard, AES
+// Bidirectional encryption
 // For 16,24,32 bit strings, corresponding to AES-128, AES-192, and AES-256 encryption methods, respectively
+
 // PwdKey should be confidential content
 var PwdKey = []byte("DLW--#HAPIJWOCNB")
 
-// PKCS7 Fill
+// PKCS7 padding
 func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	// Repeat() function is to copy and paste [] byte {byte (padding)} slices
 	// and then merge them into a new byte slice to return
 	padText := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padText...)
+}
+
+// Deleting padding strings
+func PKCS7UnPadding(origData []byte) ([]byte, error) {
+	length := len(origData)
+	if length == 0 {
+		return nil, errors.New("Invalid encrypted string！")
+	} else {
+		unpadding := int(origData[length-1])
+		// Cut slices, remove padding bytes, and return clear text
+		return origData[:(length - unpadding)], nil
+	}
 }
 
 // Encryption
@@ -37,4 +53,13 @@ func AesEcrypt(origData []byte, key []byte) ([]byte, error) {
 	// 5. Perform encryption
 	blocMode.CryptBlocks(encrypted, origData)
 	return encrypted, nil
+}
+
+// encrypt base64
+func EnPwdCode(pwd []byte) (string, error) {
+	result, err := AesEcrypt(pwd, PwdKey)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(result), err
 }
