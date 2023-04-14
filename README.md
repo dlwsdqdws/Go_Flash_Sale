@@ -9,3 +9,5 @@
 
 ## Data Flow
 <p align="center"><img src="static/img/data_flow.png" alt="data_flow" width="500" /></p> 
+
+## Optimization

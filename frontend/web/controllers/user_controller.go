@@ -52,17 +52,21 @@ func (c *UserController) GetLogin() mvc.View {
 }
 
 func (c *UserController) PostLogin() mvc.Response {
+	// 1. Get user form information
 	var (
 		userName = c.Ctx.FormValue("userName")
 		password = c.Ctx.FormValue("password")
 	)
+	// 2. check account & psw
 	user, check := c.Service.IsPswSuccess(userName, password)
 	if !check {
 		return mvc.Response{
 			Path: "/user/login",
 		}
 	}
+	// 3. write userID(encrypted) to cookie
 	tool.GlobalCookie(c.Ctx, "uid", strconv.FormatInt(user.ID, 10))
+
 	c.Session.Set("userID", strconv.FormatInt(user.ID, 10))
 
 	return mvc.Response{
