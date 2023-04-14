@@ -13,3 +13,9 @@
 ## Optimization
 ### Bidirectional Encryption
 ### Distributed System
+
+## Environment
+Go 1.18.1 arm64
+<br>IRIS 11.1.1
+<br>Mysql 8.0.31
+<br>RabbitMQ 3.11.11
