@@ -13,6 +13,7 @@
 ## Optimization
 ### Bidirectional Encryption
 ### Distributed System
+Load balancing ：Consistent Hashing
 
 ## Environment
 Go 1.18.1 arm64
