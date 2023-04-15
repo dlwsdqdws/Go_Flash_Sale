@@ -14,6 +14,9 @@
 ### Bidirectional Encryption
 ### Distributed System
 Load balancing ：Consistent Hashing
+### RabbitMq
+WRK Test
+<p align="center"><img src="static/img/wrk.png" alt="data_flow" width="500" /></p> 
 
 ## Environment
 Go 1.18.1 arm64
