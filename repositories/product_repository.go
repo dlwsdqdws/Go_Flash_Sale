@@ -15,6 +15,7 @@ type IProduct interface {
 	Update(*datamodels.Product) error
 	SelectByKey(int64) (*datamodels.Product, error)
 	SelectAll() ([]*datamodels.Product, error)
+	SubProductNum(productID int64) error
 }
 
 // 2. implement interface
@@ -136,6 +137,18 @@ func (p *ProductManager) SelectAll() (productArray []*datamodels.Product, errRes
 		common.DataToStructByTagSql(v, product)
 		productArray = append(productArray, product)
 	}
-
 	return
+}
+
+func (p *ProductManager) SubProductNum(productID int64) error {
+	if err := p.Conn(); err != nil {
+		return err
+	}
+	sql := "update " + p.table + " set productNum=productNum-1 where ID=" + strconv.FormatInt(productID, 10)
+	stmt, err := p.mysqlConn.Prepare(sql)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec()
+	return err
 }

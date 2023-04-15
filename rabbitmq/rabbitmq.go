@@ -1,9 +1,12 @@
 package rabbitmq
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
+	"pro-iris/datamodels"
+	"pro-iris/services"
 	"sync"
 )
 
@@ -69,4 +72,59 @@ func (r *RabbitMQ) PublishSimple(message string) error {
 			Body:        []byte(message),
 		})
 	return nil
+}
+
+func (r *RabbitMQ) ConsumeSimple(orderService services.IOrderService, productService services.IProductService) {
+	q, err := r.channel.QueueDeclare(
+		r.QueueName,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// Consumer flow control
+	r.channel.Qos(
+		1, // one msg a time
+		0,
+		false,
+	)
+	msgs, err := r.channel.Consume(
+		q.Name,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+	forever := make(chan bool)
+	go func() {
+		for d := range msgs {
+			log.Printf("Received a message: %s", d.Body)
+			message := &datamodels.Message{}
+			err := json.Unmarshal([]byte(d.Body), message)
+			if err != nil {
+				fmt.Println(err)
+			}
+			_, err = orderService.InsertOrderByMessage(message)
+			if err != nil {
+				fmt.Println(err)
+			}
+			err = productService.SubNumberOne(message.ProductID)
+			if err != nil {
+				fmt.Println(err)
+			}
+			// tell rabbitmq to delete the msg already consumed
+			d.Ack(false)
+		}
+	}()
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
 }
