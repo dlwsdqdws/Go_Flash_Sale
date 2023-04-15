@@ -3,9 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"pro-iris/common"
 	"pro-iris/encrypt"
+	"strconv"
+	"sync"
 )
 
 // cluster addresses : here internal IPs
@@ -17,7 +20,103 @@ var port = "8081"
 
 var hashConsistent *common.Consistent
 
-// Unified verification filter
+// store control info
+type AccessControl struct {
+	// Store information based on user ID
+	sourcesArray map[int]interface{}
+	// Using RW mutex to ensure R/W security of map
+	sync.RWMutex
+}
+
+var accessControl = &AccessControl{
+	sourcesArray: make(map[int]interface{}),
+}
+
+func (m *AccessControl) GetNewRecord(uid int) interface{} {
+	m.RWMutex.RLock()
+	defer m.RWMutex.RUnlock()
+	data := m.sourcesArray[uid]
+	return data
+}
+
+func (m *AccessControl) SetNewRecord(uid int) {
+	m.RWMutex.Lock()
+	m.sourcesArray[uid] = "hello world"
+	m.RWMutex.Unlock()
+}
+
+func (m *AccessControl) GetDistributedRight(req *http.Request) bool {
+	uid, err := req.Cookie("uid")
+	if err != nil {
+		return false
+	}
+	// consistent hashing
+	hostRequest, err := hashConsistent.Get(uid.Value)
+	if err != nil {
+		return false
+	}
+
+	if hostRequest == localHost {
+		// Local: data reading and verification
+		return m.GetDataFromMap(uid.Value)
+	} else {
+		// using agent
+		return GetDataFromOtherMap(hostRequest, req)
+	}
+}
+
+func (m *AccessControl) GetDataFromMap(uid string) bool {
+	uidInt, err := strconv.Atoi(uid)
+	if err != nil {
+		return false
+	}
+	data := m.GetNewRecord(uidInt)
+	return data != nil
+}
+
+func GetDataFromOtherMap(host string, req *http.Request) bool {
+	uidPre, err := req.Cookie("uid")
+	if err != nil {
+		return false
+	}
+	uidSign, err := req.Cookie("sign")
+	if err != nil {
+		return false
+	}
+	// mock interface access
+	client := &http.Client{}
+	r, err := http.NewRequest("GET", "http://"+host+":"+port+"/access", nil)
+	if err != nil {
+		return false
+	}
+	cookieUid := &http.Cookie{
+		Name:  "uid",
+		Value: uidPre.Value,
+		Path:  "/",
+	}
+	cookieSign := &http.Cookie{
+		Name:  "sign",
+		Value: uidSign.Value,
+		Path:  "/",
+	}
+	r.AddCookie(cookieUid)
+	r.AddCookie(cookieSign)
+	response, err := client.Do(r)
+	if err != nil {
+		return false
+	}
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return false
+	}
+	if response.StatusCode == 200 {
+		return string(body) == "true"
+	} else {
+		return false
+	}
+}
+
+// Auth : Unified verification filter
 // Each interface needs to be verified in advance
 func Auth(w http.ResponseWriter, r *http.Request) error {
 	fmt.Println("run Auth function successfully")
@@ -61,7 +160,7 @@ func checkInfo(checkStr string, signStr string) bool {
 	return checkStr == signStr
 }
 
-// Execute normal logic
+// Check : Execute normal logic
 func Check(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("run Check function successfully")
 }
