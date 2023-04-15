@@ -8,6 +8,7 @@ import (
 	"pro-iris/common"
 	"pro-iris/frontend/middleware"
 	"pro-iris/frontend/web/controllers"
+	"pro-iris/rabbitmq"
 	"pro-iris/repositories"
 	"pro-iris/services"
 )
@@ -43,6 +44,8 @@ func main() {
 	userParty.Register(userService, ctx)
 	userParty.Handle(new(controllers.UserController))
 
+	rabbitmq := rabbitmq.NewRabbitMQSimple("rabbitmqProduct")
+
 	product := repositories.NewProductManager("product", db)
 	productService := services.NewProductService(product)
 	order := repositories.NewOrderManagerRepository("order", db)
@@ -50,7 +53,7 @@ func main() {
 	proProduct := app.Party("/product")
 	productParty := mvc.New(proProduct)
 	proProduct.Use(middleware.AuthConProduct)
-	productParty.Register(productService, orderService)
+	productParty.Register(productService, orderService, ctx, rabbitmq)
 	productParty.Handle(new(controllers.ProductController))
 
 	// 8. Start
