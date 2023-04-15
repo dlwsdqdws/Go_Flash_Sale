@@ -5,13 +5,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Create a MySQL connection.
+// NewMysqlConn Create a MySQL connection.
 func NewMysqlConn() (db *sql.DB, err error) {
 	db, err = sql.Open("mysql", "root:daqidan123@tcp(127.0.0.1:3306)/imooc?charset=utf8")
 	return
 }
 
-// Retrieve the return value -- fetch one row.
+// GetResultRow Retrieve the return value -- fetch one row.
 func GetResultRow(rows *sql.Rows) map[string]string {
 	columns, _ := rows.Columns()
 	scanArgs := make([]interface{}, len(columns))
@@ -32,7 +32,7 @@ func GetResultRow(rows *sql.Rows) map[string]string {
 	return record
 }
 
-// // Retrieve the return value -- all
+// GetResultRows Retrieve the return value -- all
 func GetResultRows(rows *sql.Rows) map[int]map[string]string {
 	// Return all columns.
 	columns, _ := rows.Columns()

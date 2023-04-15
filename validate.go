@@ -20,7 +20,7 @@ var port = "8081"
 
 var hashConsistent *common.Consistent
 
-// store control info
+// AccessControl : store control info
 type AccessControl struct {
 	// Store information based on user ID
 	sourcesArray map[int]interface{}

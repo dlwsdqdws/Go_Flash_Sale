@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Map data to a struct based on the SQL tag in the struct and convert the types.
+// DataToStructByTagSql : Map data to a struct based on the SQL tag in the struct and convert the types.
 func DataToStructByTagSql(data map[string]string, obj interface{}) {
 	objValue := reflect.ValueOf(obj).Elem()
 	for i := 0; i < objValue.NumField(); i++ {
@@ -32,7 +32,6 @@ func DataToStructByTagSql(data map[string]string, obj interface{}) {
 	}
 }
 
-// Type conversion
 func TypeConversion(value string, ntype string) (reflect.Value, error) {
 	if ntype == "string" {
 		return reflect.ValueOf(value), nil
