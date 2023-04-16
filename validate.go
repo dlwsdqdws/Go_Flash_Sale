@@ -1,12 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"pro-iris/common"
+	"pro-iris/datamodels"
 	"pro-iris/encrypt"
+	"pro-iris/rabbitmq"
 	"strconv"
 	"sync"
 )
@@ -14,11 +18,18 @@ import (
 // cluster addresses : here internal IPs
 var hostArray = []string{"127.0.0.1", "127.0.0.1"}
 
-var localHost = "127.0.0.1"
+var localHost = ""
 
-var port = "8081"
+// GetOneIp : getOne SLB intranet IP
+var GetOneIp = "127.0.0.1"
+
+var port = "8083"
+
+var GetOnePort = "8084"
 
 var hashConsistent *common.Consistent
+
+var rabbitMqValidate *rabbitmq.RabbitMQ
 
 // AccessControl : store control info
 type AccessControl struct {
@@ -66,46 +77,18 @@ func (m *AccessControl) GetDistributedRight(req *http.Request) bool {
 }
 
 func (m *AccessControl) GetDataFromMap(uid string) bool {
-	uidInt, err := strconv.Atoi(uid)
-	if err != nil {
-		return false
-	}
-	data := m.GetNewRecord(uidInt)
-	return data != nil
+	//uidInt, err := strconv.Atoi(uid)
+	//if err != nil {
+	//	return false
+	//}
+	//data := m.GetNewRecord(uidInt)
+	//return data != nil
+	return true
 }
 
 func GetDataFromOtherMap(host string, req *http.Request) bool {
-	uidPre, err := req.Cookie("uid")
-	if err != nil {
-		return false
-	}
-	uidSign, err := req.Cookie("sign")
-	if err != nil {
-		return false
-	}
-	// mock interface access
-	client := &http.Client{}
-	r, err := http.NewRequest("GET", "http://"+host+":"+port+"/access", nil)
-	if err != nil {
-		return false
-	}
-	cookieUid := &http.Cookie{
-		Name:  "uid",
-		Value: uidPre.Value,
-		Path:  "/",
-	}
-	cookieSign := &http.Cookie{
-		Name:  "sign",
-		Value: uidSign.Value,
-		Path:  "/",
-	}
-	r.AddCookie(cookieUid)
-	r.AddCookie(cookieSign)
-	response, err := client.Do(r)
-	if err != nil {
-		return false
-	}
-	body, err := ioutil.ReadAll(response.Body)
+	hostUrl := "http://" + host + ":" + port + "/checkRight"
+	response, body, err := GetCurl(hostUrl, req)
 	if err != nil {
 		return false
 	}
@@ -160,9 +143,112 @@ func checkInfo(checkStr string, signStr string) bool {
 	return checkStr == signStr
 }
 
+func CheckRight(w http.ResponseWriter, r *http.Request) {
+	right := accessControl.GetDistributedRight(r)
+	if !right {
+		w.Write([]byte("false"))
+		return
+	}
+	w.Write([]byte("true"))
+	return
+}
+
 // Check : Execute normal logic
 func Check(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("run Check function successfully")
+	queryForm, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil || len(queryForm["productID"]) <= 0 {
+		w.Write([]byte("false"))
+		return
+	}
+	productString := queryForm["productID"][0]
+	fmt.Println(productString)
+	userCookie, err := r.Cookie("uid")
+	if err != nil {
+		w.Write([]byte("false"))
+		return
+	}
+
+	// 1.Distributed permission verification
+	right := accessControl.GetDistributedRight(r)
+	if right == false {
+		w.Write([]byte("false"))
+		return
+	}
+	// 2.getOne quantity control : prevent oversold
+	hostUrl := "http://" + GetOneIp + ":" + GetOnePort + "/getOne"
+	responseValidate, bodyValidate, err := GetCurl(hostUrl, r)
+	if err != nil {
+		w.Write([]byte("false"))
+		return
+	}
+	// 3.check request status of quantity control
+	if responseValidate.StatusCode == 200 {
+		if string(bodyValidate) == "true" {
+			productID, err := strconv.ParseInt(productString, 10, 64)
+			if err != nil {
+				w.Write([]byte("false"))
+				return
+			}
+			userID, err := strconv.ParseInt(userCookie.Value, 10, 64)
+			if err != nil {
+				w.Write([]byte("false"))
+				return
+			}
+			message := datamodels.NewMessage(userID, productID)
+			byteMsg, err := json.Marshal(message)
+			if err != nil {
+				w.Write([]byte("false"))
+				return
+			}
+			err = rabbitMqValidate.PublishSimple(string(byteMsg))
+			if err != nil {
+				w.Write([]byte("false"))
+				return
+			}
+			w.Write([]byte("true"))
+			return
+		}
+	}
+	w.Write([]byte("false"))
+	return
+}
+
+func GetCurl(hostUrl string, request *http.Request) (response *http.Response, body []byte, err error) {
+	uidPre, err := request.Cookie("uid")
+	if err != nil {
+		return
+	}
+	uidSign, err := request.Cookie("sign")
+	if err != nil {
+		return
+	}
+	// mock interface access
+	client := &http.Client{}
+	r, err := http.NewRequest("GET", "http://"+hostUrl+":"+port+"/access", nil)
+	if err != nil {
+		return
+	}
+	cookieUid := &http.Cookie{
+		Name:  "uid",
+		Value: uidPre.Value,
+		Path:  "/",
+	}
+	cookieSign := &http.Cookie{
+		Name:  "sign",
+		Value: uidSign.Value,
+		Path:  "/",
+	}
+	r.AddCookie(cookieUid)
+	r.AddCookie(cookieSign)
+
+	response, err = client.Do(r)
+	defer response.Body.Close()
+	if err != nil {
+		return
+	}
+	body, err = ioutil.ReadAll(response.Body)
+	return
 }
 
 func main() {
@@ -173,11 +259,23 @@ func main() {
 		hashConsistent.Add(v)
 	}
 
+	localIp, err := common.GetIntranetIp()
+	if err != nil {
+		fmt.Println(err)
+	}
+	localHost = localIp
+	fmt.Println(localHost)
+
+	rabbitMqValidate = rabbitmq.NewRabbitMQSimple("rabbitmqProduct")
+	defer rabbitMqValidate.Destroy()
+
 	// 1. create filter
 	filter := common.NewFilter()
 	// 2. register filter
 	filter.RegisterFilterUri("/check", Auth)
+	filter.RegisterFilterUri("/checkRight", Auth)
 	// 3. start service
 	http.HandleFunc("/check", filter.Handle(Check))
+	http.HandleFunc("/checkRight", filter.Handle(CheckRight))
 	http.ListenAndServe(":8083", nil)
 }
