@@ -18,13 +18,23 @@
 
 ## Test
 ### Servers
-| Server Name      |  Intranet IP  |      Public IP |
-|:-----------------|:-------------:|---------------:|
-| Validate1 + SLB  | 172.26.194.42 |   47.250.49.25 |
-| Validate2 + SLB  | 172.26.194.41 | 47.250.147.115 |
-| Stress Test      | 172.17.169.89 | 47.250.131.235 |
-| Quantity Control | 172.26.194.43 | 47.250.144.234 |
-| RabbitMQ Simple  | 172.17.169.88 |  47.254.251.25 |
+1. Server zone: Malaysia (Kuala Lumpur)
+2. Server image: CentOS  7.6 64 bit, 1vCPU(s) 512 MB memory
+3. Maximum Bandwidth: 100Mbps
+4. IP address
+
+   | Server Name      |  Intranet IP  |      Public IP |
+   |:-----------------|:-------------:|---------------:|
+   | Validate1 + SLB  | 172.26.194.42 |   47.250.49.25 |
+   | Validate2 + SLB  | 172.26.194.41 | 47.250.147.115 |
+   | Stress Test      | 172.17.169.89 | 47.250.131.235 |
+   | Quantity Control | 172.26.194.43 | 47.250.144.234 |
+   | RabbitMQ Simple  | 172.17.169.88 |  47.254.251.25 |
+
+5. Build
+```go
+GOOS=linux GOARCH=amd64 go build xxx.go
+```
 ### WRK
 Set product number 10000, WRK result:
 <p align="center"><img src="static/img/wrk_result.png" alt="data_flow" width="500" /></p>
