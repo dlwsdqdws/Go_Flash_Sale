@@ -10,18 +10,25 @@ import (
 var sum int64 = 0
 
 // stored product quantity
-var productNum int64 = 10000
+var productNum int64 = 1000000
 
 var mutex sync.Mutex
+
+// rabbitmq queue request rate
+var count int64 = 0
 
 // GetOneProduct get flash sale product
 func GetOneProduct() bool {
 	mutex.Lock()
 	defer mutex.Unlock()
-	if sum < productNum {
-		sum += 1
-		fmt.Println(sum)
-		return true
+	count += 1
+	// Set to release a product every 100 requests
+	if count%100 == 0 {
+		if sum < productNum {
+			sum += 1
+			fmt.Println(sum)
+			return true
+		}
 	}
 	return false
 }

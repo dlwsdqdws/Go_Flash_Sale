@@ -26,14 +26,16 @@
 | Quantity Control | 172.26.194.43 | 47.250.144.234 |
 | RabbitMQ Simple  | 172.17.169.88 |  47.254.251.25 |
 ### WRK
-### Test1: Set product 10000.
-WRK result:
+Set product number 10000, WRK result:
 <p align="center"><img src="static/img/wrk_result.png" alt="data_flow" width="500" /></p>
 RabbitMQ queue information:
 <p align="center"><img src="static/img/rabbitmq1.png" alt="data_flow" width="500" /></p>
 The 10,000 flash sale products were sold within 10 seconds. 
 Quantity control is functioning properly. 
 The bottleneck of running is the publishing rate of RabbitMQ.
+When the product number is large, we can set the Rabbitmq queue for every 100 requests.
+
+
 
 ## Environment
 Go 1.18.1 arm64
