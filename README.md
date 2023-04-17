@@ -15,7 +15,7 @@
 2. Distributed System
 <br>Load balancing ：Consistent Hashing 
 3. RabbitMq
-4. Front-end flow control
+4. Front-end Flow Control
 
 ## Test
 ### Servers
