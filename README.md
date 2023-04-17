@@ -13,15 +13,16 @@
 ## Optimization
 1. Bidirectional Encryption
 2. Distributed System
-<br>Load balancing ：Consistent Hashing
-3.  RabbitMq
+<br>Load balancing ：Consistent Hashing 
+3. RabbitMq
+4. Front-end flow control
 
 ## Test
 ### Servers
-1. Server zone: Malaysia (Kuala Lumpur)
-2. Server image: CentOS  7.6 64 bit, 1vCPU(s) 512 MB memory
+1. Server Zone: Malaysia (Kuala Lumpur)
+2. Server Image: CentOS  7.6 64 bit, 1vCPU(s) 512 MB memory
 3. Maximum Bandwidth: 100Mbps
-4. IP address
+4. IP Addresses
 
    | Server Name      |  Intranet IP  |      Public IP |
    |:-----------------|:-------------:|---------------:|
