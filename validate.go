@@ -16,12 +16,12 @@ import (
 )
 
 // cluster addresses : here internal IPs
-var hostArray = []string{"127.0.0.1", "127.0.0.1"}
+var hostArray = []string{"172.26.194.41", "172.26.194.42"}
 
 var localHost = ""
 
 // GetOneIp : getOne SLB intranet IP
-var GetOneIp = "127.0.0.1"
+var GetOneIp = "172.26.194.43"
 
 var port = "8083"
 
@@ -223,9 +223,8 @@ func GetCurl(hostUrl string, request *http.Request) (response *http.Response, bo
 	if err != nil {
 		return
 	}
-	// mock interface access
 	client := &http.Client{}
-	r, err := http.NewRequest("GET", "http://"+hostUrl+":"+port+"/access", nil)
+	req, err := http.NewRequest("GET", hostUrl, nil)
 	if err != nil {
 		return
 	}
@@ -239,10 +238,9 @@ func GetCurl(hostUrl string, request *http.Request) (response *http.Response, bo
 		Value: uidSign.Value,
 		Path:  "/",
 	}
-	r.AddCookie(cookieUid)
-	r.AddCookie(cookieSign)
-
-	response, err = client.Do(r)
+	req.AddCookie(cookieUid)
+	req.AddCookie(cookieSign)
+	response, err = client.Do(req)
 	defer response.Body.Close()
 	if err != nil {
 		return

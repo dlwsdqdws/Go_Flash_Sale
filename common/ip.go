@@ -13,7 +13,7 @@ func GetIntranetIp() (string, error) {
 		return "", err
 	}
 	for _, address := range addrs {
-		if ipnet, check := address.(*net.IPNet); check && ipnet.IP.IsLoopback() {
+		if ipnet, check := address.(*net.IPNet); check && !ipnet.IP.IsLoopback() {
 			if ipnet.IP.To4() != nil {
 				return ipnet.IP.String(), nil
 			}
