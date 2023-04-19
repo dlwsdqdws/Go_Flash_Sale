@@ -23,7 +23,7 @@ func GetOneProduct() bool {
 	defer mutex.Unlock()
 	count += 1
 	// Set to release a product every 100 requests
-	//if count%100 == 0 {
+	//if count%100 == 0 {  // delete this line when local test
 	if sum < productNum {
 		sum += 1
 		fmt.Println(sum)

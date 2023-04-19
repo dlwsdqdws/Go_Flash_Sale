@@ -17,12 +17,14 @@ import (
 )
 
 // cluster addresses : here internal IPs
-var hostArray = []string{"192.168.68.107", "192.168.68.107"}
+//var hostArray = []string{"172.26.194.41", "172.26.194.42"}  // for real server
+var hostArray = []string{"192.168.68.107", "192.168.68.107"} // for local test
 
 var localHost = ""
 
 // GetOneIp : getOne SLB intranet IP
-var GetOneIp = "127.0.0.1"
+//var GetOneIp = "172.26.194.43"  // for real server
+var GetOneIp = "127.0.0.1" // for local test
 
 var port = "8083"
 
