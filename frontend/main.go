@@ -16,6 +16,7 @@ import (
 func main() {
 	// 1. Create iris instance
 	app := iris.New()
+
 	// 2. Set error mode
 	app.Logger().SetLevel("debug")
 	// 3. Register model
