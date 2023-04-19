@@ -13,10 +13,16 @@ import (
 	"pro-iris/services"
 )
 
+func Cors(ctx iris.Context) {
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+	ctx.Next()
+}
+
 func main() {
 	// 1. Create iris instance
 	app := iris.New()
-
+	app.Use(Cors)
 	// 2. Set error mode
 	app.Logger().SetLevel("debug")
 	// 3. Register model
@@ -41,7 +47,8 @@ func main() {
 	// 7. Register controller and routing
 	user := repositories.NewUserManagerRepository("user", db)
 	userService := services.NewUserService(user)
-	userParty := mvc.New(app.Party("/user"))
+	proUser := app.Party("/user")
+	userParty := mvc.New(proUser)
 	userParty.Register(userService, ctx)
 	userParty.Handle(new(controllers.UserController))
 
