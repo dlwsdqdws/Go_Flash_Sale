@@ -10,9 +10,9 @@ import (
 	"sync"
 )
 
-//const MQURL = "amqp://test_user:test_user@127.0.0.1:5672/test"
+const MQURL = "amqp://test_user:test_user@127.0.0.1:5672/test"
 
-const MQURL = "amqp://test_user:test_user@172.17.169.88:5672/test"
+//const MQURL = "amqp://test_user:test_user@172.17.169.88:5672/test"
 
 type RabbitMQ struct {
 	conn      *amqp.Connection

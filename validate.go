@@ -13,15 +13,16 @@ import (
 	"pro-iris/rabbitmq"
 	"strconv"
 	"sync"
+	"time"
 )
 
 // cluster addresses : here internal IPs
-var hostArray = []string{"172.26.194.41", "172.26.194.42"}
+var hostArray = []string{"192.168.68.107", "192.168.68.107"}
 
 var localHost = ""
 
 // GetOneIp : getOne SLB intranet IP
-var GetOneIp = "172.26.194.43"
+var GetOneIp = "127.0.0.1"
 
 var port = "8083"
 
@@ -31,19 +32,22 @@ var hashConsistent *common.Consistent
 
 var rabbitMqValidate *rabbitmq.RabbitMQ
 
+// server response interval -> Avoid malicious for-loop requests
+var interval = 20
+
 // AccessControl : store control info
 type AccessControl struct {
 	// Store information based on user ID
-	sourcesArray map[int]interface{}
+	sourcesArray map[int]time.Time
 	// Using RW mutex to ensure R/W security of map
 	sync.RWMutex
 }
 
 var accessControl = &AccessControl{
-	sourcesArray: make(map[int]interface{}),
+	sourcesArray: make(map[int]time.Time),
 }
 
-func (m *AccessControl) GetNewRecord(uid int) interface{} {
+func (m *AccessControl) GetNewRecord(uid int) time.Time {
 	m.RWMutex.RLock()
 	defer m.RWMutex.RUnlock()
 	data := m.sourcesArray[uid]
@@ -52,7 +56,7 @@ func (m *AccessControl) GetNewRecord(uid int) interface{} {
 
 func (m *AccessControl) SetNewRecord(uid int) {
 	m.RWMutex.Lock()
-	m.sourcesArray[uid] = "hello world"
+	m.sourcesArray[uid] = time.Now()
 	m.RWMutex.Unlock()
 }
 
@@ -102,6 +106,8 @@ func GetDataFromOtherMap(host string, req *http.Request) bool {
 // Auth : Unified verification filter
 // Each interface needs to be verified in advance
 func Auth(w http.ResponseWriter, r *http.Request) error {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	fmt.Println("run Auth function successfully")
 	// Add permission verification based on cookie
 	err := checkUserInfo(r)
@@ -144,6 +150,8 @@ func checkInfo(checkStr string, signStr string) bool {
 }
 
 func CheckRight(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	right := accessControl.GetDistributedRight(r)
 	if !right {
 		w.Write([]byte("false"))
@@ -155,6 +163,8 @@ func CheckRight(w http.ResponseWriter, r *http.Request) {
 
 // Check : Execute normal logic
 func Check(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	fmt.Println("run Check function successfully")
 	queryForm, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil || len(queryForm["productID"]) <= 0 {
