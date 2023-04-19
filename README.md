@@ -16,8 +16,12 @@
 Load balancing ：Consistent Hashing 
 ### RabbitMq
 ### Flow Control
-1. Front-end: Users must log in before shopping, and they can only click the purchase button once every 10 seconds.
-2. Back-end: 
+1. Front-end
+<br>1.1 Users must log in before shopping.
+<br>1.2 Users can only click the purchase button once every 10 seconds.
+2. Back-end
+<br>1.1 Server responds to requests every 10 seconds.
+<br>1.2 Add blacklist.
 
 
 ## Test
