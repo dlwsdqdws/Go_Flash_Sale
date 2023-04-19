@@ -32,8 +32,8 @@ var hashConsistent *common.Consistent
 
 var rabbitMqValidate *rabbitmq.RabbitMQ
 
-// server response interval -> Avoid malicious for-loop requests
-var interval = 20
+// Set server response interval to be 10 seconds -> Avoid malicious for-loop requests
+var interval = 10
 
 // AccessControl : store control info
 type AccessControl struct {
@@ -81,12 +81,17 @@ func (m *AccessControl) GetDistributedRight(req *http.Request) bool {
 }
 
 func (m *AccessControl) GetDataFromMap(uid string) bool {
-	//uidInt, err := strconv.Atoi(uid)
-	//if err != nil {
-	//	return false
-	//}
-	//data := m.GetNewRecord(uidInt)
-	//return data != nil
+	uidInt, err := strconv.Atoi(uid)
+	if err != nil {
+		return false
+	}
+	data := m.GetNewRecord(uidInt)
+	if !data.IsZero() {
+		if data.Add(time.Duration(interval) * time.Second).After(time.Now()) {
+			return false
+		}
+	}
+	m.SetNewRecord(uidInt)
 	return true
 }
 
@@ -106,7 +111,8 @@ func GetDataFromOtherMap(host string, req *http.Request) bool {
 // Auth : Unified verification filter
 // Each interface needs to be verified in advance
 func Auth(w http.ResponseWriter, r *http.Request) error {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8082")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	fmt.Println("run Auth function successfully")
 	// Add permission verification based on cookie
@@ -150,7 +156,8 @@ func checkInfo(checkStr string, signStr string) bool {
 }
 
 func CheckRight(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8082")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	right := accessControl.GetDistributedRight(r)
 	if !right {
@@ -163,7 +170,8 @@ func CheckRight(w http.ResponseWriter, r *http.Request) {
 
 // Check : Execute normal logic
 func Check(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8082")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 	fmt.Println("run Check function successfully")
 	queryForm, err := url.ParseQuery(r.URL.RawQuery)

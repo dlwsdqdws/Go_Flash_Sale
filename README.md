@@ -11,11 +11,13 @@
 <p align="center"><img src="static/img/data_flow.png" alt="data_flow" width="500" /></p> 
 
 ## Optimization
-1. Bidirectional Encryption
-2. Distributed System
-<br>Load balancing ：Consistent Hashing 
-3. RabbitMq
-4. Front-end Flow Control
+### Bidirectional Encryption
+### Distributed System
+Load balancing ：Consistent Hashing 
+### RabbitMq
+### Flow Control
+1. Front-end: Users must log in before shopping, and they can only click the purchase button once every 10 seconds.
+2. Back-end: 
 
 
 ## Test

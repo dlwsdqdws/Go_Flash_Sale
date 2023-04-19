@@ -1023,6 +1023,7 @@
 
         // 3. bind request server address
         xmlHttp.open("GET", "http://localhost:8083/check?productID="+productID, true)
+        xmlHttp.withCredentials = true;
         // 4. send request
         xmlHttp.send();
     }
