@@ -37,6 +37,28 @@ var rabbitMqValidate *rabbitmq.RabbitMQ
 // Set server response interval to be 10 seconds -> Avoid malicious for-loop requests
 var interval = 10
 
+type BlackList struct {
+	listArray map[int]bool
+	sync.RWMutex
+}
+
+var blackList = &BlackList{
+	listArray: make(map[int]bool),
+}
+
+func (m *BlackList) GetBlackListByID(uid int) bool {
+	m.RLock()
+	defer m.RUnlock()
+	return m.listArray[uid]
+}
+
+func (m *BlackList) SetBlackListByID(uid int) bool {
+	m.Lock()
+	defer m.Unlock()
+	m.listArray[uid] = true
+	return true
+}
+
 // AccessControl : store control info
 type AccessControl struct {
 	// Store information based on user ID
@@ -85,6 +107,9 @@ func (m *AccessControl) GetDistributedRight(req *http.Request) bool {
 func (m *AccessControl) GetDataFromMap(uid string) bool {
 	uidInt, err := strconv.Atoi(uid)
 	if err != nil {
+		return false
+	}
+	if blackList.GetBlackListByID(uidInt) {
 		return false
 	}
 	data := m.GetNewRecord(uidInt)
@@ -227,6 +252,8 @@ func Check(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			w.Write([]byte("true"))
+			// Every user can buy only once
+			//blackList.SetBlackListByID(userID)
 			return
 		}
 	}
