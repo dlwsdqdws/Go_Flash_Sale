@@ -10,12 +10,17 @@
 ## Data Flow
 <p align="center"><img src="static/img/data_flow.png" alt="data_flow" width="500" /></p> 
 
-## Optimization
+## Improvements
 ### Bidirectional Encryption
+* Use Cookies instead of Session to reduce request consumption under heavy traffic.
+* Encrypt Cookie with Advanced Encryption Standard(AES-128).
 ### Distributed System
-Load balancing ：Consistent Hashing 
-### RabbitMq
-### Flow Control
+* Server Load Balancer(SLB) - Consistent Hashing 
+* Add virtual server node on the hash ring to ensure fairness.
+* Use Binary Search to find the IP address of the corresponding server according to the hash value of key to realize SLB.
+### RabbitMQ
+* Use RabbitMQ instead of Redis to improve the Queries Per Second(QPS) of each product. 
+### Traffic Control
 1. Front-end
 * Users must log in before shopping.
 * Users can only click the purchase button once every 10 seconds.
@@ -52,8 +57,6 @@ The 10,000 flash sale products were sold within 10 seconds.
 Quantity control is functioning properly. 
 The bottleneck of running is the publishing rate of RabbitMQ.
 When the product number is large, we can set the Rabbitmq queue for every 100 requests.
-
-
 
 ## Environment
 Go 1.18.1 arm64
