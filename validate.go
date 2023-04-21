@@ -18,7 +18,7 @@ import (
 
 // cluster addresses : here internal IPs
 //var hostArray = []string{"172.26.194.41", "172.26.194.42"}  // for real server
-var hostArray = []string{"192.168.68.107", "192.168.68.107"} // for local test
+var hostArray = []string{"192.168.68.102", "192.168.68.102"} // for local test
 
 var localHost = ""
 

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/time/rate"
 	"log"
 	"net/http"
 	"sync"
+	"time"
 )
 
 var sum int64 = 0
@@ -43,7 +45,15 @@ func GetProduct(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/getOne", GetProduct)
+	// generate a token every millisecond
+	r := rate.Every(1 * time.Millisecond)
+	// token bucket size : 1000
+	bucket := rate.NewLimiter(r, 1000)
+	http.HandleFunc("/getOne", func(w http.ResponseWriter, r *http.Request) {
+		if bucket.Allow() {
+			GetProduct(w, r)
+		}
+	})
 	err := http.ListenAndServe(":8084", nil)
 	if err != nil {
 		log.Fatal("Error Occurred:", err)

@@ -61,6 +61,7 @@ func main() {
 	proProduct := app.Party("/product")
 	productParty := mvc.New(proProduct)
 	proProduct.Use(middleware.AuthConProduct)
+	proProduct.Use(middleware.TokenLimiter)
 	productParty.Register(productService, orderService, ctx, rabbitmq)
 	productParty.Handle(new(controllers.ProductController))
 

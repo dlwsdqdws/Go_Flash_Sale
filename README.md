@@ -12,7 +12,7 @@
 
 ## Improvements
 ### Bidirectional Encryption
-* Use Cookies instead of Session to reduce request consumption under heavy traffic.
+* Use Cookie instead of Session to reduce request consumption under heavy traffic.
 * Encrypt Cookie with Advanced Encryption Standard(AES-128).
 ### Distributed System
 * Server Load Balancer(SLB) - Consistent Hashing 
@@ -27,6 +27,9 @@
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
+* Add Token Bucket: 
+<br> "/check" : time/rate, token is generated every millisecond and token bucket size is 1000.
+<br> "/product" : token is generated every millisecond and token bucket size is 10000.
 
 
 ## Test
