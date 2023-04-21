@@ -11,6 +11,7 @@ import (
 	"pro-iris/rabbitmq"
 	"pro-iris/repositories"
 	"pro-iris/services"
+	"pro-iris/tool"
 )
 
 func Cors(ctx iris.Context) {
@@ -64,6 +65,9 @@ func main() {
 	proProduct.Use(middleware.TokenLimiter)
 	productParty.Register(productService, orderService, ctx, rabbitmq)
 	productParty.Handle(new(controllers.ProductController))
+
+	app.Get("/captcha/", tool.GetCaptchaID)
+	app.Get("/captcha/*", tool.GetCaptchaImg)
 
 	// 8. Start
 	app.Run(
