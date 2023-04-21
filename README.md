@@ -24,12 +24,13 @@
 1. Front-end
 * Users must log in before shopping.
 * Users can only click the purchase button once every 10 seconds.
+* Captcha.
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
 * Add Token Bucket: 
 <br> "/check" : time/rate, token is generated every millisecond and token bucket size is 1000.
-<br> "/product" : token is generated every millisecond and token bucket size is 10000.
+<br> "/product" : middleware, token is generated every millisecond and token bucket size is 10000.
 
 
 ## Test
@@ -47,7 +48,7 @@
    | Quantity Control | 172.26.194.43 | 47.250.144.234 |
    | RabbitMQ Simple  | 172.17.169.88 |  47.254.251.25 |
 
-5. Build
+5. Cross Compile
 ```go
 GOOS=linux GOARCH=amd64 go build xxx.go
 ```
