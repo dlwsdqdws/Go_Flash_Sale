@@ -552,7 +552,7 @@
                                 <form id="buyForm" action="/submit" method="post">
                                     <img id="captchaImg" src="/captcha" alt="captcha">
                                     <div style="cursor: pointer" onclick="refreshCaptcha()">refresh</div>
-                                    <input type="text" name="captcha" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                                    <input type="text" style="width: 150px" name="captcha" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                                     <input type="submit" value="Buy Now" id="getButton" onclick="flashToBuy()">
                                 </form>
 <!--                                <input type="button" value="Buy Now" id="getButton" onclick="flashToBuy()">-->

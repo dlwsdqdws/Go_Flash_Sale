@@ -8,7 +8,7 @@
 5. views
 
 ## Data Flow
-<p align="center"><img src="static/img/data_flow.png" alt="data_flow" width="500" /></p> 
+<p align="center"><img src="static/img/back/data_flow.png" alt="data_flow" width="500" /></p> 
 
 ## Improvements
 ### Bidirectional Encryption
@@ -23,8 +23,8 @@
 ### Traffic Control
 1. Front-end
 * Users must log in before shopping.
-* Users can only click the purchase button once every 10 seconds.
-* Captcha: verification is required when click buy-now-button and refresh captcha frequently.
+* Users can only click the purchase button once every 10 seconds. <p align="center"><img src="static/img/front/wait_to_buy.png" alt="wait" width="500" /></p>
+* Captcha: verification is required when click buy-now-button and refresh captcha frequently. <p align="center"><img src="static/img/front/captcha.png" alt="captcha" width="500" /></p> If verification failed, users cannot buy the product and has to re-try captcha. <p align="center"><img src="static/img/front/captcha_veri_error.png" alt="captcha_verification" width="500" /></p>
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
@@ -54,9 +54,9 @@ GOOS=linux GOARCH=amd64 go build xxx.go
 ```
 ### WRK
 Set product number 10000, WRK result:
-<p align="center"><img src="static/img/wrk_result.png" alt="data_flow" width="500" /></p>
+<p align="center"><img src="static/img/wrk/wrk_result.png" alt="data_flow" width="500" /></p>
 RabbitMQ queue information:
-<p align="center"><img src="static/img/rabbitmq1.png" alt="data_flow" width="500" /></p>
+<p align="center"><img src="static/img/back/rabbitmq1.png" alt="data_flow" width="500" /></p>
 The 10,000 flash sale products were sold within 10 seconds. 
 Quantity control is functioning properly. 
 The bottleneck of running is the publishing rate of RabbitMQ.
