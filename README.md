@@ -24,7 +24,7 @@
 1. Front-end
 * Users must log in before shopping.
 * Users can only click the purchase button once every 10 seconds.
-* Captcha.
+* Captcha: verification is required when click buy-now-button and refresh captcha frequently.
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
