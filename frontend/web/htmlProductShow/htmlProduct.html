@@ -549,7 +549,16 @@
                         <div class="row row-10 product-single__actions clearfix">
                             <div class="col">
                                 <input id="productID" value="1" hidden>
-                                <input type="button" value="Buy Now" id="getButton" onclick="flashToBuy()">
+<!--                                <div>-->
+<!--                                    <img id="captchaImg" alt="captcha"/>-->
+<!--                                    <input />-->
+<!--                                </div>-->
+                                <form action="/submit" method="post">
+                                    <img src="/captcha" alt="captcha">
+                                    <input type="text" name="captcha">
+                                    <input type="submit" value="Buy Now" id="getButton" onclick="flashToBuy()">
+                                </form>
+<!--                                <input type="button" value="Buy Now" id="getButton" onclick="flashToBuy()">-->
                             </div>
                             <div class="col">
 
@@ -988,11 +997,13 @@
         location.href=redirectUrl
     }
 
-    function flashToBuy(){
+    function flashToBuy() {
         var productID = document.getElementById("productID").value;
+        var captchaID = document.getElementsByName("captcha")[0].value;
         // disable the buy button
         document.getElementById(flashBtnID).setAttribute("disabled", true);
         timeSub();
+
         // send asynchronous request
         // 1. create ajax engine object
         var xmlHttp;
@@ -1010,23 +1021,32 @@
                 // finish request
                 if(xmlHttp.status == 200){
                     // check server's response status: 200 = success
-                    var result = xmlHttp.responseText;
-                    if (result == "false"){
-                        alert("Failed to buy, please try again");
-                    }else{
-                        alert("Buy successfully");
-                        // location.href = "/product/"
+                    var result = JSON.parse(xmlHttp.responseText);
+                    if (result["error_code"] == 0){
+                        // 3. bind request server address
+                        var xmlHttp2 = new XMLHttpRequest();
+                        xmlHttp2.onreadystatechange = function() {
+                            if (xmlHttp2.readyState == 4 && xmlHttp2.status == 200) {
+                                alert("Buy Successfully");
+                            }
+                        }
+                        xmlHttp2.open("GET", "http://localhost:8083/check?productID=" + productID, true);
+                        xmlHttp2.withCredentials = true;
+                        xmlHttp2.send();
+                    } else {
+                        alert("Verification code input errors, please re-enter");
                     }
                 }
             }
         }
 
-        // 3. bind request server address
-        xmlHttp.open("GET", "http://localhost:8083/check?productID="+productID, true)
+        // 5. bind request server address
+        xmlHttp.open("GET", "/captcha/verify?&code="+captchaID, true)
         xmlHttp.withCredentials = true;
-        // 4. send request
+        // 6. send request
         xmlHttp.send();
     }
+
 
     function timeSub(){
         inter = setInterval("timeFunc()", 1000)
@@ -1046,6 +1066,10 @@
     }
 </script>
 
+<!--<script type="text/javascript">-->
+<!--    var captchaUrl = "http://localhost:8082/captcha/cmjF2ZUbUUirf7cvIKKN.png"-->
+<!--    document.getElementById("captchaImg").src = captchaUrl;-->
+<!--</script>-->
 
 <!-- jQuery Scripts -->
 <script type="text/javascript" src="/public/js/jquery.min.js"></script>

@@ -68,6 +68,7 @@ func main() {
 
 	app.Get("/captcha/", tool.GetCaptchaID)
 	app.Get("/captcha/*", tool.GetCaptchaImg)
+	app.Get("/captcha/verify", tool.VerifyCaptcha)
 
 	// 8. Start
 	app.Run(
