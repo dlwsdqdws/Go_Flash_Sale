@@ -12,6 +12,7 @@ import (
 	"pro-iris/repositories"
 	"pro-iris/services"
 	"pro-iris/tool"
+	"time"
 )
 
 func Cors(ctx iris.Context) {
@@ -31,7 +32,14 @@ func main() {
 	app.RegisterView(template)
 	// 4. Set model Repository
 	app.StaticWeb("/public", "./frontend/web/public")
+
+	startTime := time.Date(2023, 4, 21, 12, 0, 0, 0, time.UTC)
+	endTime := time.Date(2023, 4, 24, 12, 0, 0, 0, time.UTC)
+	app.Get("/html/htmlProduct.html", middleware.OnlyDuringMiddleware(startTime, endTime), func(ctx iris.Context) {
+		ctx.ServeFile("./frontend/web/htmlProductShow/htmlProduct.html", false)
+	})
 	app.StaticWeb("/html", "./frontend/web/htmlProductShow")
+
 	// 5. Error handler
 	app.OnAnyErrorCode(func(ctx iris.Context) {
 		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "Error Occurred！"))

@@ -24,14 +24,22 @@
 
 1. Front-end
 * Users must log in before shopping.
-* Users can only click the purchase button once every 10 seconds. <p align="center"><img src="static/img/front/wait_to_buy.png" alt="wait" width="200" /></p>
-* Captcha: verification is required when click buy-now-button and refresh captcha frequently. <p align="center"><img src="static/img/front/captcha.png" alt="captcha" width="200" /></p> If verification failed, users cannot buy the product and has to re-try captcha. <p align="center"><img src="static/img/front/captcha_veri_error.png" alt="captcha_verification_fail" width="350" /></p> If verification succeed and meet other flash sale restriction, it will show <p align="center"><img src="static/img/front/buy_success.png" alt="captcha_success" width="350" /></p>
+* Users can only click the purchase button once every 10 seconds. 
+<br><p align="center"><img src="static/img/front/wait_to_buy.png" alt="wait" width="200" /></p>
+* Captcha: verification is required when click buy-now-button and refresh captcha frequently. 
+<br><p align="center"><img src="static/img/front/captcha.png" alt="captcha" width="200" /></p>
+<br>If verification failed, users cannot buy the product and has to re-try captcha. 
+<br><p align="center"><img src="static/img/front/captcha_veri_error.png" alt="captcha_verification_fail" width="350" /></p>
+<br>If verification succeed and meet other flash sale restriction, it will show 
+<br><p align="center"><img src="static/img/front/buy_success.png" alt="captcha_success" width="350" /></p>
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
 * Add Token Bucket: 
 <br> "/check" : time/rate, token is generated every millisecond and token bucket size is 1000.
 <br> "/product" : middleware, token is generated every millisecond and token bucket size is 10000.
+* Limited access time: Access to the sale page not within a specific time period will be denied.
+<br><p align="center"><img src="static/img/front/access_deny.png" alt="access_deny" width="500" /></p>
 
 
 ## Test
