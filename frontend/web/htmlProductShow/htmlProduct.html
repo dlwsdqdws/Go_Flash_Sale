@@ -1024,14 +1024,14 @@
                         var xmlHttp2 = new XMLHttpRequest();
                         xmlHttp2.onreadystatechange = function() {
                             if (xmlHttp2.readyState == 4 && xmlHttp2.status == 200) {
-                                alert("Buy Successfully");
+                                window.alert("Buy Successfully");
                             }
                         }
                         xmlHttp2.open("GET", "http://localhost:8083/check?productID=" + productID, true);
                         xmlHttp2.withCredentials = true;
                         xmlHttp2.send();
                     } else {
-                        alert("Verification code input errors, please re-enter");
+                        window.alert("Verification code input errors, please re-enter");
                     }
                 }
             }

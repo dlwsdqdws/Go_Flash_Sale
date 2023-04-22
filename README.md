@@ -21,10 +21,11 @@
 ### RabbitMQ
 * Use RabbitMQ instead of Redis to improve the Queries Per Second(QPS) of each product. 
 ### Traffic Control
+
 1. Front-end
 * Users must log in before shopping.
 * Users can only click the purchase button once every 10 seconds. <p align="center"><img src="static/img/front/wait_to_buy.png" alt="wait" width="200" /></p>
-* Captcha: verification is required when click buy-now-button and refresh captcha frequently. <p align="center"><img src="static/img/front/captcha.png" alt="captcha" width="200" /></p> If verification failed, users cannot buy the product and has to re-try captcha. <p align="center"><img src="static/img/front/captcha_veri_error.png" alt="captcha_verification" width="350" /></p>
+* Captcha: verification is required when click buy-now-button and refresh captcha frequently. <p align="center"><img src="static/img/front/captcha.png" alt="captcha" width="200" /></p> If verification failed, users cannot buy the product and has to re-try captcha. <p align="center"><img src="static/img/front/captcha_veri_error.png" alt="captcha_verification_fail" width="350" /></p> If verification succeed and meet other flash sale restriction, it will show <p align="center"><img src="static/img/front/buy_success.png" alt="captcha_success" width="350" /></p>
 2. Back-end
 * Server responds to requests every 10 seconds.
 * Add blacklist.
