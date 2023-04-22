@@ -549,12 +549,9 @@
                         <div class="row row-10 product-single__actions clearfix">
                             <div class="col">
                                 <input id="productID" value="1" hidden>
-<!--                                <div>-->
-<!--                                    <img id="captchaImg" alt="captcha"/>-->
-<!--                                    <input />-->
-<!--                                </div>-->
-                                <form action="/submit" method="post">
-                                    <img src="/captcha" alt="captcha">
+                                <form id="buyForm" action="/submit" method="post">
+                                    <img id="captchaImg" src="/captcha" alt="captcha">
+                                    <div style="cursor: pointer" onclick="refreshCaptcha()">refresh</div>
                                     <input type="text" name="captcha">
                                     <input type="submit" value="Buy Now" id="getButton" onclick="flashToBuy()">
                                 </form>
@@ -1045,6 +1042,7 @@
         xmlHttp.withCredentials = true;
         // 6. send request
         xmlHttp.send();
+        refreshCaptcha();
     }
 
 
@@ -1064,12 +1062,13 @@
             document.getElementById(flashBtnID).value = "Wait for " + count + " seconds to buy";
         }
     }
-</script>
 
-<!--<script type="text/javascript">-->
-<!--    var captchaUrl = "http://localhost:8082/captcha/cmjF2ZUbUUirf7cvIKKN.png"-->
-<!--    document.getElementById("captchaImg").src = captchaUrl;-->
-<!--</script>-->
+    function refreshCaptcha() {
+        var img = document.getElementById("captchaImg");
+        img.src = "/captcha?" + new Date().getTime();
+    }
+
+</script>
 
 <!-- jQuery Scripts -->
 <script type="text/javascript" src="/public/js/jquery.min.js"></script>
