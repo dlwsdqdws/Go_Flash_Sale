@@ -1,4 +1,4 @@
-# Go High Concurrency
+# Go High Concurrency Flash Sale
 
 ## Project Structure
 1. model
@@ -73,6 +73,7 @@ When the product number is large, we can set the Rabbitmq queue for every 100 re
 
 ## Environment
 Go 1.18.1 arm64
-<br>IRIS 11.1.1
+<br>Iris 11.1.1
+<br>Gorm 1.25.0
 <br>Mysql 8.0.31
 <br>RabbitMQ 3.11.11
