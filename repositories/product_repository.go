@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// 1. define interface
+// IProduct 1. define interface
 type IProduct interface {
 	Conn() error
 	Insert(*datamodels.Product) (int64, error)
@@ -18,10 +18,11 @@ type IProduct interface {
 	SubProductNum(productID int64) error
 }
 
-// 2. implement interface
+// ProductManager 2. implement interface
 type ProductManager struct {
 	table     string
 	mysqlConn *sql.DB
+	//mysqlConn *gorm.DB
 }
 
 func NewProductManager(table string, db *sql.DB) IProduct {

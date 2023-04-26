@@ -34,7 +34,7 @@ func main() {
 	app.StaticWeb("/public", "./frontend/web/public")
 
 	startTime := time.Date(2023, 4, 21, 12, 0, 0, 0, time.UTC)
-	endTime := time.Date(2023, 4, 24, 12, 0, 0, 0, time.UTC)
+	endTime := time.Date(2023, 4, 28, 12, 0, 0, 0, time.UTC)
 	app.Get("/html/htmlProduct.html", middleware.OnlyDuringMiddleware(startTime, endTime), func(ctx iris.Context) {
 		ctx.ServeFile("./frontend/web/htmlProductShow/htmlProduct.html", false)
 	})
