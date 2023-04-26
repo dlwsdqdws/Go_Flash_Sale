@@ -6,20 +6,20 @@ import (
 	"pro-iris/tool"
 )
 
-type IUserService interface {
+type IGormUserService interface {
 	IsPswSuccess(userName string, psw string) (user *datamodels.User, check bool)
 	AddUser(user *datamodels.User) (userId int64, err error)
 }
 
-func NewUserService(repository repositories.IUserRepository) IUserService {
-	return &UserService{repository}
+func NewGormUserService(repository repositories.IGormUserRepository) IGormUserService {
+	return &GormUserService{repository}
 }
 
-type UserService struct {
-	UserRepository repositories.IUserRepository
+type GormUserService struct {
+	UserRepository repositories.IGormUserRepository
 }
 
-func (u *UserService) IsPswSuccess(userName string, psw string) (user *datamodels.User, check bool) {
+func (u *GormUserService) IsPswSuccess(userName string, psw string) (user *datamodels.User, check bool) {
 	var err error
 	user, err = u.UserRepository.Select(userName)
 	if err != nil {
@@ -32,7 +32,7 @@ func (u *UserService) IsPswSuccess(userName string, psw string) (user *datamodel
 	return
 }
 
-func (u *UserService) AddUser(user *datamodels.User) (userId int64, err error) {
+func (u *GormUserService) AddUser(user *datamodels.User) (userId int64, err error) {
 	pwdByte, errPwd := tool.GeneratePassword(user.HashPassword)
 	if errPwd != nil {
 		return userId, errPwd
