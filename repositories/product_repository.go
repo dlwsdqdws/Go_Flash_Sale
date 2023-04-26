@@ -22,7 +22,6 @@ type IProduct interface {
 type ProductManager struct {
 	table     string
 	mysqlConn *sql.DB
-	//mysqlConn *gorm.DB
 }
 
 func NewProductManager(table string, db *sql.DB) IProduct {

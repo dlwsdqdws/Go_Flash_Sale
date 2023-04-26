@@ -17,11 +17,14 @@ type IGormProduct interface {
 
 // GormProductManager 2. implement interface
 type GormProductManager struct {
-	db *gorm.DB
+	db    *gorm.DB
+	table string
 }
 
+const productTable = "products"
+
 func NewGormProductManager(db *gorm.DB) IGormProduct {
-	return &GormProductManager{db: db}
+	return &GormProductManager{db: db, table: productTable}
 }
 
 func (p *GormProductManager) Insert(product *datamodels.Product) (productId int64, err error) {
@@ -80,19 +83,17 @@ func (p *GormProductManager) SelectByKey(productId int64) (productRes *datamodel
 func (p *GormProductManager) SelectAll() (productArray []*datamodels.Product, errRes error) {
 	// 1. retrieve all product records
 
-	result := p.db.Find(&productArray)
+	result := p.db.Table(p.table).Find(&productArray)
 	// 2. check for any errors
 	if result.Error != nil {
 		return nil, result.Error
 	}
-
 	return productArray, nil
 }
 
 func (p *GormProductManager) SubProductNum(productID int64) error {
 	// 1. decrement the productNum column for the record with the given ID
 	result := p.db.Model(&datamodels.Product{}).Where("id = ?", productID).Update("product_num", gorm.Expr("product_num - ?", 1))
-
 	// 2. check for any errors
 	if result.Error != nil {
 		return result.Error

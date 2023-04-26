@@ -20,7 +20,7 @@ func (o *GormOrderController) GetAll() mvc.View {
 		o.Ctx.Application().Logger().Debug("Fail to access order information")
 	}
 	return mvc.View{
-		Name: "order/view.html",
+		Name: "order/gormview.html",
 		Data: iris.Map{
 			"order": orderArray,
 		},
