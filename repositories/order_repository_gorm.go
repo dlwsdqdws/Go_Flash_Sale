@@ -56,7 +56,10 @@ func (o *GormOrderManager) SelectAll() (orderArray []*datamodels.Order, err erro
 }
 
 func (o *GormOrderManager) SelectAllWithInfo() (orderMap map[int]map[string]string, err error) {
-	rows, err := o.db.Table("order").Select("order.id,product.productName,order.orderStatus").Joins("left join product on order.productID = product.id").Rows()
+	rows, err := o.db.Table("orders").
+		Select("orders.id, orders.product_id, orders.order_status, products.product_name, products.product_num, products.product_image, products.product_url").
+		Joins("left join products on orders.product_id = products.id").
+		Rows()
 	if err != nil {
 		return nil, err
 	}

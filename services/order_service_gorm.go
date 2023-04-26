@@ -24,27 +24,27 @@ type GormOrderService struct {
 }
 
 func (o *GormOrderService) GetOrderByID(orderID int64) (order *datamodels.Order, err error) {
-	return o.GetOrderByID(orderID)
+	return o.GormOrderRepository.SelectByKey(orderID)
 }
 
 func (o *GormOrderService) DeleteOrderByID(orderID int64) bool {
-	return o.DeleteOrderByID(orderID)
+	return o.GormOrderRepository.Delete(orderID)
 }
 
 func (o *GormOrderService) UpdateOrder(order *datamodels.Order) error {
-	return o.UpdateOrder(order)
+	return o.GormOrderRepository.Update(order)
 }
 
 func (o *GormOrderService) InsertOrder(order *datamodels.Order) (int64, error) {
-	return o.InsertOrder(order)
+	return o.GormOrderRepository.Insert(order)
 }
 
 func (o *GormOrderService) GetAllOrder() ([]*datamodels.Order, error) {
-	return o.GetAllOrder()
+	return o.GormOrderRepository.SelectAll()
 }
 
 func (o *GormOrderService) GetAllOrderInfo() (map[int]map[string]string, error) {
-	return o.GetAllOrderInfo()
+	return o.GormOrderRepository.SelectAllWithInfo()
 }
 
 func (o *GormOrderService) InsertOrderByMessage(message *datamodels.Message) (orderID int64, err error) {

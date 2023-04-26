@@ -79,8 +79,8 @@ func (p *GormProductManager) SelectByKey(productId int64) (productRes *datamodel
 
 func (p *GormProductManager) SelectAll() (productArray []*datamodels.Product, errRes error) {
 	// 1. retrieve all product records
-	result := p.db.Find(&productArray)
 
+	result := p.db.Find(&productArray)
 	// 2. check for any errors
 	if result.Error != nil {
 		return nil, result.Error
