@@ -16,12 +16,15 @@ type IGormOrderRepository interface {
 }
 
 func NewGormOrderManager(db *gorm.DB) IGormOrderRepository {
-	return &GormOrderManager{db}
+	return &GormOrderManager{db: db, table: orderTable}
 }
 
 type GormOrderManager struct {
-	db *gorm.DB
+	db    *gorm.DB
+	table string
 }
+
+const orderTable = "order"
 
 func (o *GormOrderManager) Insert(order *datamodels.Order) (productID int64, err error) {
 	err = o.db.Create(order).Error
@@ -29,7 +32,7 @@ func (o *GormOrderManager) Insert(order *datamodels.Order) (productID int64, err
 }
 
 func (o *GormOrderManager) Delete(orderID int64) (check bool) {
-	err := o.db.Delete(&datamodels.Order{ID: orderID}).Error
+	err := o.db.Table("order").Delete(&datamodels.Order{ID: orderID}).Error
 	if err != nil {
 		return false
 	}
