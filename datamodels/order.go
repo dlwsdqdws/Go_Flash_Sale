@@ -5,6 +5,7 @@ type Order struct {
 	UserId      int64 `json:"UserID" sql:"userID" imooc:"UserID"`
 	ProductId   int64 `json:"ProductId" sql:"productId" imooc:"ProductId"`
 	OrderStatus int64 `json:"OrderStatus" sql:"orderStatus" imooc:"OrderStatus"`
+	//Deleted     gorm.DeletedAt
 }
 
 const (

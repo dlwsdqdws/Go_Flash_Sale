@@ -7,6 +7,9 @@
 4. controllers
 5. views
 
+Sample Page: 
+<p align="center"><img src="static/img/front/product_page.png" alt="data_flow" width="500" /></p> 
+
 ## Data Flow
 <p align="center"><img src="static/img/back/data_flow.png" alt="data_flow" width="500" /></p> 
 
