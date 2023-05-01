@@ -14,6 +14,8 @@ Sample Page:
 <p align="center"><img src="static/img/back/data_flow.png" alt="data_flow" width="500" /></p> 
 
 ## Improvements
+### Object-Relationl Mapping
+* Built mapping between relational databases and objects using GORM.
 ### Bidirectional Encryption
 * Use Cookie instead of Session to reduce request consumption under heavy traffic.
 * Encrypt Cookie with Advanced Encryption Standard(AES-128).
